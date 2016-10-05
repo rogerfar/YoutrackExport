@@ -16,7 +16,7 @@ namespace YoutrackExport
             const String password = "your password";
             const String site = "URL to your YT instance without HTTP";
             const String dest = @"C:\Temp\YtExport\";
-			const String sessionId = "sessionId";
+            const String sessionId = "sessionId";
 
             var connection = new Connection(site, 80, false, "youtrack");
             connection.Authenticate(username, password);
@@ -30,6 +30,8 @@ namespace YoutrackExport
 
                 foreach (dynamic issue in issues)
                 {
+                    Console.WriteLine($"Exporting issue: {issue.Id}");
+
                     var exportIssue = new StringBuilder();
 
                     exportIssue.AppendLine($"Id: {issue.Id}");
@@ -43,7 +45,7 @@ namespace YoutrackExport
                         }
                         else if (prop.Value != null && prop.Value.ToString() == "System.Object[]")
                         {
-                            var propArray = (Object[])prop.Value;
+                            var propArray = (Object[]) prop.Value;
                             var valueArray = String.Join(",", propArray);
                             exportIssue.AppendLine($"{prop.Key}: {valueArray}");
                         }
@@ -103,11 +105,12 @@ namespace YoutrackExport
         {
             CookieContainer = new CookieContainer();
         }
+
         public CookieContainer CookieContainer { get; }
 
         protected override WebRequest GetWebRequest(Uri address)
         {
-            var request = (HttpWebRequest)base.GetWebRequest(address);
+            var request = (HttpWebRequest) base.GetWebRequest(address);
             request.CookieContainer = CookieContainer;
             return request;
         }
